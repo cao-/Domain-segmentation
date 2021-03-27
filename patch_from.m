@@ -17,9 +17,7 @@ PCnum = 0;  % Number of the current patch
 
 %%
 % Labels for the triangles.  On row t they store the list of 
-% indices of patches that have the t-th triangle in the inside (GREEN) and
-% those that have the t-th triangle on the border and not bad (YELLOW); and
-% those that have the t-th triangle on the border and bad (RED)
+% indices of patches that have the t-th triangle in the border (YELLOW).
 YL = zeros(NT, 1);
 
 
@@ -34,7 +32,6 @@ dk = dXC(it, 1:end-1);
 if not(ismember(iXk(3), t))
     % swap the third and fourth elements
     iXk([3 4]) = iXk([4 3]);
-    dk([3 4]) = dk([4 3]);
 end
 
 % The coordinates of the k nearest neighbours
@@ -42,10 +39,9 @@ Xk = X(iXk, :);
 
 % Local distance matrix
 Dk = pdist2(Xk, Xk);
-% Mean distance of the local points
-%mk = mean_dist(Dk);
-mk = dk(end);
-%Appropriate scaling parameter to be used in this local context
+% Max distance of the local points
+mk = max(max(Dk));
+% Appropriate scaling parameter to be used in this local context
 bk = b/mk;
 % Local interpolation matrix
 Ak = rf(bk, Dk);
@@ -111,9 +107,6 @@ while not(isempty(BD))
     % Find the patch which have this triangle in the border
     iEX = YL(it);  % Indices of those patches
     
-    % Take the one with more points (there is at least one, otherwise the triangle that
-    % we are considering doesn't belong to the border)
-    
     ipc = iEX(1);
     
     
@@ -140,11 +133,10 @@ while not(isempty(BD))
         Ak = Ak(likeep, likeep);
         % Values in the data sites Xk
         Zk = Z(iXk);
-        %h = sum(Zk(1:3))/3;
         h = mean(Zk);
         Zk = Zk - h;
         % LOOCV vectors, native norm and coefficients of the local interpolant
-        [~, ~, ~, Qk, ak] = loocv_vector(Ak, Zk);
+        [~, ~, ~, Qk, ~] = loocv_vector(Ak, Zk);
         
         bdn = norm(Qk, 1);
         
@@ -211,38 +203,15 @@ while not(isempty(BD))
         PCnum = PCnum + 1;
         
         % Take note of the patch
-        %PC.j(PCnum) = {iXk};
-        % PC.Q(PCnum) = {Qk};
-        %PC.a(PCnum) = {ak};
         PC.inside(PCnum) = {inside};
-        %PC.border(PCnum) = {border};
-        %PC.c(PCnum) = {c};
-        %PC.r(PCnum) = {r};
-        %PC.h(PCnum) = {h};
-        %PC.phi(PCnum) = {@(r) rf(bk, r)};
         
         % Update the global status of the triangles
         ST(inside) = 'g';
         STborder = ST(border); 
         logic = and(STborder ~= 'g', STborder ~= 'r');
         ST(border(logic)) = 'y'; 
-        %ST(border) = mixcolours(ST(border), 'y'*ones(size(border, 1), 1));
         
-        % Update GL and YL
-        %GL(inside) = cellfun(@(l) [l, PCnum], GL(inside), 'UniformOutput', false);
-        %YL(border) = cellfun(@(l) [l, PCnum], YL(border), 'UniformOutput', false);
-        % I update YL either in the indices i subset of border where it is 0, or in the
-        % index i subset of border where length(PC.inside{YL(i)})<length(inside)
-        %update_indices = false(NT, 1);
-        %logical_border = flase(NT, 1);
-        %logical_border(border) = true;
-        %logical_nonzero_border = and(YL~=0, logical_border);
-        %update_indices1 = and(YL == 0, logical_border);
-        %update_indices2 = and(
-        %YL(update_indices) = PCnum;
-        
-        %update_border = border(YL(border) == 0);
-        %YL(update_border) = PCnum;
+        % Update YL
         YL(border) = PCnum;
         
         
@@ -256,16 +225,9 @@ while not(isempty(BD))
     else
         % If we didn't succed in extending the patch on the triangle
         
-        % If there were only one possible patch that could be extended up
-        % to the triangle t, then we remove the triangle t from the global
-        % list of borders
-        %if length(iEX) == 1
-            BD = setdiff(BD, it);
-            % Update the global status of the triangle
-            ST(it) = 'r';
-        %end        
-    end
-%plot_status(X, T, ST);    
+        BD = setdiff(BD, it);
+        ST(it) = 'r';       
+    end    
 end
 
 end
