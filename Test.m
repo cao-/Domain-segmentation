@@ -7,7 +7,7 @@ domain = [0 0;
           1 1];
 dim = size(domain, 2);
 
-fname = 'h1';
+fname = 'h4';
 f = @(x) feval(fname, x(:, 1), x(:, 2));
 
 datatype = 'h';

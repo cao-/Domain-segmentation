@@ -12,11 +12,13 @@ C = TR.circumcenter;
 % Number of triangles NT
 NT = size(T, 1);
 
-[iXC, dXC] = knnsearch(X, C, 'k', k);
+[iXC, ~] = knnsearch(X, C, 'k', k);
 
 
 
 % Starting triangle
+%rng(12);
+%it = randi(NT)
 it = 1;
 STs = cell(0);
 
@@ -26,7 +28,7 @@ STG = char('w'*ones(NT, 1));
 
 
 while not(isempty(it)) 
-    ST = patch_from(it, X, Z, T, C, NT, tol, iXC, dXC, b, rf);
+    ST = patch_from(it, X, Z, T, C, NT, tol, iXC, b, rf);
     if not(sum(ST == 'g') == 0)
         STs(end + 1) = {ST};
     end

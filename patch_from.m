@@ -1,4 +1,4 @@
-function ST =  patch_from(it, X, Z, T, C, NT, tol, iXC, dXC, b, rf)
+function ST =  patch_from(it, X, Z, T, C, NT, tol, iXC, b, rf)
 
 % Status of the triangles, identified with colours.  Initially all
 % triangles are white
@@ -24,9 +24,7 @@ YL = zeros(NT, 1);
 %% First patch
 %
 % The indices in X of the set Xk of k nearest neighbours to c
-iXk = iXC(it, 1:end-1);
-% Their distances from the centre c
-dk = dXC(it, 1:end-1);
+iXk = iXC(it, 1:end-2);
 % The first three points must be the vertices of the triangle.  We ensure
 % that it is the case.
 if not(ismember(iXk(3), t))
@@ -86,7 +84,7 @@ BD = border;
 while not(isempty(BD))
 
     % Take one triangle from the border list
-    it = BD(1); %randsample(BD, 1); % 
+    it = BD(1);
         
     % Indices of the vertices of the triangle
     t = T(it, :);
@@ -94,7 +92,7 @@ while not(isempty(BD))
     c = C(it, :);
     
     % The indices in X of the set Xk of k nearest neighbours to c
-    iXk = iXC(it, 1:end-1);
+    iXk = iXC(it, 1:end-2);
     % Their distances from the centre c
     % The first three points must be the vertices of the triangle.  We ensure
     % that it is the case.

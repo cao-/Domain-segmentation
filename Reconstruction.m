@@ -1,6 +1,6 @@
 
 % E evaluation points
-neval = 150;
+neval = 200;
 M = neval^2;
 [E, M] = makePoints(domain, M, 'u');
 
