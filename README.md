@@ -28,4 +28,8 @@ The parameters for the SVM can be set inside the function `classificating_functi
 Interpolation is performed globally on each subdomain by the function `interpolate.m`.  This function may be replaced by some partition of unity interpolation method for better performance.
 
 
-The implementation of the multiclass SVM that is described in the thesis may produce bad results when the discontinuity curves of the function have intersections---a better strategy for multiclass SVM should be implemented.
+The implementation of the multiclass SVM that is described in the thesis (script `Reconstruction.m`) may produce bad results when the discontinuity curves of the function have intersections---a better strategy for multiclass SVM should be implemented.  One example is the one-vs-all approach implemented in the script `Reconstruction_onevsall.m`.
+
+
+
+
