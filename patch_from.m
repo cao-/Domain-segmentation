@@ -1,4 +1,4 @@
-function ST =  patch_from(it, X, Z, T, C, NT, tol, iXC, b, rf)
+function ST =  patch_from(it, X, Z, T, VT, C, NT, tol, iXC, b, rf)
 
 % Status of the triangles, identified with colours.  Initially all
 % triangles are white
@@ -45,7 +45,7 @@ bk = b/mk;
 Ak = rf(bk, Dk);
 % Values in the data sites Xk
 Zk = Z(iXk);
-h = mean(Zk);
+h = sum(Zk)/length(Zk);% mean(Zk);
 Zk = Zk - h;
 % LOOCV vectors, native norm and coefficients of the local interpolant
 [~, ~, ~, Qk, ~] = loocv_vector(Ak, Zk);
@@ -61,7 +61,7 @@ end
     
 % Find out which triangles are in the inside and which are on the border of
 % the patch
-[inside, border] = triangleLocations(T, iXk);
+[inside, border] = triangleLocations(T, VT, iXk);
 
 % Update the patch number
 PCnum = PCnum + 1;
@@ -131,7 +131,7 @@ while not(isempty(BD))
         Ak = Ak(likeep, likeep);
         % Values in the data sites Xk
         Zk = Z(iXk);
-        h = mean(Zk);
+        h = sum(Zk)/length(Zk); % mean(Zk);
         Zk = Zk - h;
         % LOOCV vectors, native norm and coefficients of the local interpolant
         [~, ~, ~, Qk, ~] = loocv_vector(Ak, Zk);
@@ -195,7 +195,7 @@ while not(isempty(BD))
     if succeed
         % Find out which triangles are in the inside and which are on the border of
         % the patch
-        [inside, border] = triangleLocations(T, iXk);
+        [inside, border] = triangleLocations(T, VT, iXk);
         
         % Update the patch number
         PCnum = PCnum + 1;

@@ -1,13 +1,13 @@
 %clear all
-rng(42)
+%rng(42)
 warning('on')
-N = 2^10;
+N = 2^12;
 
 domain = [0 0;
           1 1];
 dim = size(domain, 2);
 
-fname = 'h4';
+fname = 'h1';
 f = @(x) feval(fname, x(:, 1), x(:, 2));
 
 datatype = 'h';

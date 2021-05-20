@@ -9,6 +9,9 @@ T = TR.ConnectivityList;
 % Circumcentres of the triangles
 C = TR.circumcenter;
 
+VT = vertices2triangles(T, size(X, 1));
+
+
 % Number of triangles NT
 NT = size(T, 1);
 
@@ -28,7 +31,7 @@ STG = char('w'*ones(NT, 1));
 
 
 while not(isempty(it)) 
-    ST = patch_from(it, X, Z, T, C, NT, tol, iXC, b, rf);
+    ST = patch_from(it, X, Z, T, VT, C, NT, tol, iXC, b, rf);
     if not(sum(ST == 'g') == 0)
         STs(end + 1) = {ST};
     end
