@@ -6,6 +6,33 @@ TR = delaunayTriangulation(X);
 % Triangles of the delaunay triangulation: each row contains the indices in
 % X of the vertices of a triangle
 T = TR.ConnectivityList;
+
+
+% Remove elongated triangles at the border
+removed = true;
+ratio = 1/30;
+while removed
+    removed = false;
+    ibd = TR.edgeAttachments(TR.freeBoundary);
+    ir = [];
+    for j = 1:length(ibd)
+        V = X(T(ibd{j}, :), :);
+        e1 = V(2, :) - V(1, :);
+        e2 = V(3, :) - V(2, :);
+        e3 = V(1, :) - V(3, :);
+        Area = det([e1; e2]);
+        Perimeter = norm(e1) + norm(e2) + norm(e3);
+        if Area/Perimeter^2 < ratio
+            ir(end + 1) = ibd{j};
+            removed = true;
+        end
+    end
+    T(ir,:) = [];
+    TR = triangulation(T,X);
+end
+
+
+
 % Circumcentres of the triangles
 C = TR.circumcenter;
 
